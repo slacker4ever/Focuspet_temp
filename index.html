@@ -1,521 +1,207 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Focus Pet — Cute Focus Tracker</title>
+<title>Focus Pet</title>
 
-<!-- Fredoka font (playful, rounded) -->
-<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&display=swap" rel="stylesheet">
-
-<!-- Lottie & Chart.js -->
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&display=swap" rel="stylesheet" />
 <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <style>
-  :root{
-    --bg1: linear-gradient(180deg,#032925 0%, #053e3a 50%, #0a3140 100%);
-    --card: rgba(255,255,255,0.04);
-    --muted: #b9d6d1;
-    --accent1: #8de0c7; /* pastel mint */
-    --accent2: #ffd7e0; /* pastel pink */
-    --accent3: #c3b4ff; /* pastel lavender */
-    --glass: rgba(255,255,255,0.03);
-    --soft-shadow: 0 8px 30px rgba(2,12,10,0.55);
-    --radius: 18px;
-  }
-  *{box-sizing:border-box}
-  html,body{height:100%;margin:0;font-family:'Fredoka',system-ui,-apple-system,Helvetica,Arial;color:#e8fbf6;background:var(--bg1);-webkit-font-smoothing:antialiased;}
-  .app{max-width:900px;margin:18px auto;padding:18px;display:flex;flex-direction:column;gap:16px}
-  header{display:flex;align-items:center;justify-content:space-between;gap:12px}
-  .brand{display:flex;gap:12px;align-items:center}
-  .logo{width:46px;height:46px;border-radius:14px;background:linear-gradient(180deg,var(--accent1),var(--accent3));display:flex;align-items:center;justify-content:center;font-weight:700;color:#083;box-shadow:var(--soft-shadow)}
-  h1{font-size:1.05rem;margin:0}
-  .top-cards{display:flex;gap:12px;align-items:center}
-  .card-mini{background:var(--card);padding:10px 14px;border-radius:12px;backdrop-filter: blur(6px);box-shadow:var(--soft-shadow);min-width:120px}
-  .card-mini .label{font-size:.78rem;color:var(--muted)}
-  .card-mini .val{font-weight:700;font-size:1.05rem;margin-top:6px}
-
-  /* main center area */
-  .center-wrap{display:flex;gap:22px;align-items:flex-start;justify-content:center;flex-wrap:wrap}
-  .focus-area{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));border-radius:24px;padding:20px;box-shadow:var(--soft-shadow);width:540px;min-height:420px;display:flex;flex-direction:column;align-items:center;gap:14px}
-  /* circular timer card */
-  .timer-card{width:320px;height:320px;border-radius:999px;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));display:flex;align-items:center;justify-content:center;position:relative;box-shadow:inset 0 -8px 20px rgba(0,0,0,0.4), 0 18px 40px rgba(0,0,0,0.6)}
-  .timer-ring{position:absolute;inset:12px;border-radius:999px;display:flex;align-items:center;justify-content:center}
-  .timer-inner{width:78%;height:78%;border-radius:999px;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.015));display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;padding:8px}
-  #time{font-size:2.6rem;font-weight:700;letter-spacing:1px}
-  .sub-text{color:var(--muted);font-size:.95rem}
-  .start-big{margin-top:12px;background:linear-gradient(90deg,var(--accent1),var(--accent3));border:none;color:#053;width:80%;padding:14px 18px;border-radius:999px;font-weight:700;box-shadow:0 10px 30px rgba(10,30,25,0.3);cursor:pointer}
-
-  /* pet inside circle */
-  .pet-holder{position:absolute;top:18px;display:flex;align-items:center;justify-content:center;pointer-events:none}
-  lottie-player#petAnim{width:160px;height:160px;pointer-events:auto}
-
-  /* right column & shop / progress panels */
-  .side-panel{min-width:300px;display:flex;flex-direction:column;gap:14px}
-  .panel{background:var(--card);padding:12px;border-radius:16px;box-shadow:var(--soft-shadow);backdrop-filter: blur(6px)}
-  .panel h3{margin:0 0 8px 0}
-  .shop-grid{display:flex;flex-wrap:wrap;gap:10px}
-  .shop-item{background:linear-gradient(180deg,rgba(255,255,255,0.015),rgba(255,255,255,0.01));padding:10px;border-radius:12px;width:calc(50% - 6px);text-align:center}
-  .shop-item button{margin-top:8px;padding:8px 10px;border-radius:9px;border:none;background:var(--accent1);color:#032;cursor:pointer;font-weight:700}
-
-  /* progress charts */
-  .charts{display:flex;flex-direction:column;gap:12px;align-items:center}
-  .period-tabs{display:flex;gap:8px;justify-content:center;margin-bottom:8px}
-  .tab{padding:8px 12px;border-radius:999px;background:transparent;border:1px solid rgba(255,255,255,0.03);cursor:pointer}
-  .tab.active{background:linear-gradient(90deg,var(--accent1),var(--accent3));color:#052;font-weight:700}
-
-  .small-muted{color:var(--muted);font-size:.92rem}
-
-  /* bottom nav */
-  .bottom-nav{position:fixed;left:50%;transform:translateX(-50%);bottom:18px;background:rgba(0,0,0,0.24);padding:8px 18px;border-radius:999px;display:flex;gap:16px;backdrop-filter: blur(6px);box-shadow:0 8px 30px rgba(0,0,0,0.6)}
-  .nav-btn{color:#eafaf2;background:transparent;border:none;padding:8px 10px;border-radius:10px;cursor:pointer;font-weight:600}
-  .nav-btn.active{background:linear-gradient(90deg,var(--accent1),var(--accent3));color:#052}
-
-  /* responsive */
-  @media (max-width:920px){
-    .app{padding:12px}
-    .center-wrap{flex-direction:column;align-items:center}
-    .focus-area{width:92%}
-    .side-panel{width:92%}
-  }
+body{
+  margin:0;
+  font-family:'Fredoka',sans-serif;
+  background:linear-gradient(160deg,#042b28,#0b4340,#13565a);
+  color:#e8fbf6;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  min-height:100vh;
+}
+header{
+  width:100%;
+  display:flex;
+  justify-content:space-around;
+  padding:10px;
+}
+.card{background:rgba(255,255,255,0.05);padding:10px 20px;border-radius:12px;text-align:center;}
+main{display:flex;flex-direction:column;align-items:center;margin-top:20px}
+#petBox{
+  width:220px;height:220px;
+  border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  background:rgba(255,255,255,0.05);
+  box-shadow:0 0 20px rgba(0,0,0,0.4);
+  margin-bottom:20px;
+}
+lottie-player{width:180px;height:180px}
+#time{font-size:2.5em;margin:10px 0}
+button{
+  font-family:'Fredoka',sans-serif;
+  background:#8de0c7;
+  border:none;
+  color:#043;
+  font-weight:700;
+  border-radius:10px;
+  padding:10px 20px;
+  margin:5px;
+  cursor:pointer;
+}
+#shop,#progress{display:none;text-align:center;margin-top:30px}
+.shop-item{
+  background:rgba(255,255,255,0.05);
+  padding:12px;border-radius:12px;margin:8px;
+  display:inline-block;width:150px;
+}
+.tab-bar{margin:10px}
+.tab{background:none;border:1px solid rgba(255,255,255,0.2);color:#e8fbf6;padding:6px 12px;border-radius:8px;cursor:pointer}
+.tab.active{background:#8de0c7;color:#043;font-weight:700}
+canvas{margin-top:10px}
+nav{position:fixed;bottom:15px;background:rgba(0,0,0,0.4);padding:8px 16px;border-radius:30px}
+nav button{background:none;border:none;color:#fff;margin:0 10px;font-size:1em;cursor:pointer}
+nav button.active{color:#8de0c7;font-weight:700}
 </style>
 </head>
 <body>
-<div class="app" role="application" aria-label="Focus Pet app">
 
-  <header>
-    <div class="brand">
-      <div class="logo">🐾</div>
-      <div>
-        <h1>Focus Pet</h1>
-        <div class="small-muted">Raise your pet by focusing — like Forest, cuter</div>
-      </div>
-    </div>
+<header>
+  <div class="card">Usage Time<br><span id="usageTotal">0 m</span></div>
+  <div class="card">Focus Today<br><span id="todayTotal">0 m</span></div>
+  <div class="card">Coins<br><span id="coins">0</span></div>
+</header>
 
-    <div class="top-cards">
-      <div class="card-mini">
-        <div class="label">Usage Time</div>
-        <div class="val" id="usageTotal">0m</div>
-      </div>
-      <div class="card-mini">
-        <div class="label">Focus Time (today)</div>
-        <div class="val" id="todayTotal">0m</div>
-      </div>
-      <div class="card-mini" style="display:flex;align-items:center;gap:8px">
-        <div style="font-size:1.3rem">🎁</div>
-        <div style="min-width:100px;text-align:left">
-          <div class="label">Coins</div>
-          <div class="val" id="coinCount">0</div>
-        </div>
-      </div>
-    </div>
-  </header>
-
-  <main class="center-wrap">
-
-    <section class="focus-area" aria-label="Focus area">
-      <div class="timer-card" role="region" aria-label="timer">
-        <div class="pet-holder" style="width:100%;display:flex;justify-content:center">
-          <!-- Lottie animation (local file) -->
-          <lottie-player id="petAnim"
-                         src="Cat Pookie.json"
-                         background="transparent"
-                         speed="1"
-                         loop autoplay>
-          </lottie-player>
-        </div>
-
-        <div class="timer-ring">
-          <!-- SVG ring (visual only), actual progress computed in JS -->
-          <svg width="100%" height="100%" viewBox="0 0 320 320" preserveAspectRatio="xMidYMid meet">
-            <defs>
-              <linearGradient id="g1" x1="0" x2="1"><stop offset="0" stop-color="var(--accent1)"/><stop offset="1" stop-color="var(--accent3)"/></linearGradient>
-            </defs>
-            <circle cx="160" cy="160" r="140" stroke="rgba(255,255,255,0.03)" stroke-width="14" fill="none"></circle>
-            <circle id="ring" cx="160" cy="160" r="140" stroke="url(#g1)" stroke-width="14" fill="none" stroke-linecap="round" transform="rotate(-90 160 160)" stroke-dasharray="879" stroke-dashoffset="879"></circle>
-          </svg>
-        </div>
-
-        <div class="timer-inner">
-          <div id="time">00:00</div>
-          <div class="sub-text" id="petStatus">Your pet is sleepy...</div>
-          <button class="start-big" id="startBig">Start Focus Now</button>
-        </div>
-      </div>
-
-      <div style="width:100%;display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
-        <button class="action" id="start">Start</button>
-        <button class="action" id="pause">Pause</button>
-        <button class="action" id="reset">Reset</button>
-      </div>
-    </section>
-
-    <aside class="side-panel">
-      <div class="panel">
-        <h3>Shop</h3>
-        <div class="shop-grid">
-          <div class="shop-item">
-            🍖 Feed Pet<br><strong>10 coins</strong>
-            <div><button onclick="feedPet()">Buy</button></div>
-          </div>
-          <div class="shop-item">
-            🧸 Play with Pet<br><strong>15 coins</strong>
-            <div><button onclick="playWithPet()">Buy</button></div>
-          </div>
-          <div class="shop-item">
-            🌈 Skin (demo)<br><strong>50 coins</strong>
-            <div><button onclick="buySkin()">Buy</button></div>
-          </div>
-          <div class="shop-item">
-            ✨ Tiny boost<br><strong>6 coins</strong>
-            <div><button onclick="tinyBoost()">Buy</button></div>
-          </div>
-        </div>
-        <div style="margin-top:8px;color:var(--muted);font-size:.95rem">Shop items change pet reaction and growth.</div>
-      </div>
-
-      <div class="panel">
-        <h3>Progress</h3>
-        <div class="period-tabs" role="tablist" aria-label="Select period">
-          <button class="tab active" data-period="daily">Daily</button>
-          <button class="tab" data-period="weekly">Weekly</button>
-          <button class="tab" data-period="monthly">Monthly</button>
-          <button class="tab" data-period="yearly">Yearly</button>
-        </div>
-
-        <div class="charts">
-          <canvas id="pieChart" width="260" height="200"></canvas>
-          <canvas id="barChart" width="300" height="180"></canvas>
-          <div style="display:flex;justify-content:space-between;align-items:center">
-            <div class="small-muted">Weekly average</div>
-            <div id="weeklyAvg" style="font-weight:700">0 min</div>
-          </div>
-        </div>
-      </div>
-    </aside>
-
-  </main>
-
-  <div class="bottom-nav" role="navigation" aria-label="bottom navigation">
-    <button class="nav-btn active" id="navHome">Home</button>
-    <button class="nav-btn" id="navShop">Shop</button>
-    <button class="nav-btn" id="navProgress">Progress</button>
+<main id="home">
+  <div id="petBox">
+    <lottie-player id="pet" src="Cat Pookie.json" background="transparent" speed="1" loop autoplay></lottie-player>
   </div>
+  <div id="status">Your pet is sleepy…</div>
+  <div id="time">00:00</div>
+  <div>
+    <button id="startBtn">Start</button>
+    <button id="pauseBtn">Pause</button>
+    <button id="resetBtn">Reset</button>
+  </div>
+</main>
 
-</div>
+<section id="shop">
+  <h2>Shop</h2>
+  <div class="shop-item">🍖 Feed Pet (10 coins)<br><button id="feedBtn">Buy</button></div>
+  <div class="shop-item">🧸 Play Pet (15 coins)<br><button id="playBtn">Buy</button></div>
+</section>
+
+<section id="progress">
+  <h2>Progress</h2>
+  <div class="tab-bar">
+    <button class="tab active" data-period="daily">Daily</button>
+    <button class="tab" data-period="weekly">Weekly</button>
+    <button class="tab" data-period="monthly">Monthly</button>
+    <button class="tab" data-period="yearly">Yearly</button>
+  </div>
+  <canvas id="pieChart" width="250" height="200"></canvas>
+  <canvas id="barChart" width="320" height="200"></canvas>
+  <p>Weekly Average: <span id="weeklyAvg">0</span> min</p>
+</section>
+
+<nav>
+  <button id="navHome" class="active">Home</button>
+  <button id="navShop">Shop</button>
+  <button id="navProgress">Progress</button>
+</nav>
 
 <script>
-/* -----------------------
-   App state & constants
-   ----------------------- */
-const RING = document.getElementById('ring');
-const RADIUS = 140;
-const CIRC = 2 * Math.PI * RADIUS;
-RING.style.strokeDasharray = CIRC;
-RING.style.strokeDashoffset = CIRC;
+window.onload = () => {
+  const pet=document.getElementById('pet');
+  const status=document.getElementById('status');
+  const timeEl=document.getElementById('time');
+  const coinsEl=document.getElementById('coins');
+  const usageEl=document.getElementById('usageTotal');
+  const todayEl=document.getElementById('todayTotal');
+  const pieCtx=document.getElementById('pieChart').getContext('2d');
+  const barCtx=document.getElementById('barChart').getContext('2d');
 
-const timeEl = document.getElementById('time');
-const petStatus = document.getElementById('petStatus');
-const petAnim = document.getElementById('petAnim');
-const coinCountEl = document.getElementById('coinCount');
-const usageTotalEl = document.getElementById('usageTotal');
-const todayTotalEl = document.getElementById('todayTotal');
-const startBtn = document.getElementById('start');
-const pauseBtn = document.getElementById('pause');
-const resetBtn = document.getElementById('reset');
-const startBig = document.getElementById('startBig');
+  let seconds=0,timer=null,isRunning=false;
+  let coins=parseInt(localStorage.getItem('fp_coins')||'0');
+  let sessions=JSON.parse(localStorage.getItem('fp_sessions')||'[]');
+  let pieChart,barChart,currentPeriod='daily';
+  coinsEl.textContent=coins;
 
-let seconds = 0;
-let timer = null;
-let isRunning = false;
-let coins = parseInt(localStorage.getItem('fp_coins')||'0');
-let sessions = JSON.parse(localStorage.getItem('fp_sessions')||'[]'); // {startISO, secs}
-let skinsOwned = JSON.parse(localStorage.getItem('fp_skins')||'[]');
-
-/* Helpers */
-function nowISO(){ return new Date().toISOString(); }
-function fmtTime(s){ const m=Math.floor(s/60).toString().padStart(2,'0'); const ss=(s%60).toString().padStart(2,'0'); return `${m}:${ss}`; }
-function saveState(){
-  localStorage.setItem('fp_coins', String(coins));
-  localStorage.setItem('fp_sessions', JSON.stringify(sessions));
-  localStorage.setItem('fp_skins', JSON.stringify(skinsOwned));
-}
-
-/* ---------- Display updates ---------- */
-function updateDisplay(){
-  timeEl.textContent = fmtTime(seconds);
-  coinCountEl.textContent = coins;
-  updateRing();
-  updatePet();
-  updateTopStats();
-}
-function updateRing(){
-  // ring loops every 60 seconds for seconds indicator, but we show progress of current minute
-  const offset = CIRC - (seconds % 60) / 60 * CIRC;
-  RING.style.strokeDashoffset = offset;
-}
-function updatePet(){
-  // moods based on total seconds in this session
-  if(seconds < 30){
-    petAnim.setSpeed(0.6);
-    petStatus.textContent = "Your pet is sleepy...";
-  } else if(seconds < 60){
-    petAnim.setSpeed(1);
-    petStatus.textContent = "Your pet is waking up!";
-  } else {
-    petAnim.setSpeed(1.5);
-    petStatus.textContent = "Your pet is super happy!";
+  function fmt(s){const m=Math.floor(s/60).toString().padStart(2,'0');const sec=(s%60).toString().padStart(2,'0');return `${m}:${sec}`;}
+  function updateDisplay(){timeEl.textContent=fmt(seconds);}
+  function updateStatus(){
+    if(seconds<30){status.textContent="Your pet is sleepy…";pet.setSpeed(0.6);}
+    else if(seconds<60){status.textContent="Your pet is waking up!";pet.setSpeed(1);}
+    else{status.textContent="Your pet is excited!";pet.setSpeed(1.5);}
   }
-}
-function updateTopStats(){
-  // compute usage total and today total from sessions
-  const todayKey = new Date().toISOString().split('T')[0];
-  let usageTotal = 0;
-  let todayTotal = 0;
-  for(const s of sessions){
-    usageTotal += s.secs;
-    if(s.startISO.startsWith(todayKey)) todayTotal += s.secs;
+  function startTimer(){
+    if(isRunning) return;
+    isRunning=true;
+    timer=setInterval(()=>{
+      seconds++;
+      if(seconds%10===0){coins++;coinsEl.textContent=coins;}
+      updateDisplay();updateStatus();
+    },1000);
   }
-  usageTotalEl.textContent = `${Math.round(usageTotal/60)}m`;
-  todayTotalEl.textContent = `${Math.round(todayTotal/60)}m`;
-}
+  function pauseTimer(){
+    if(!isRunning) return;
+    clearInterval(timer);isRunning=false;
+    const today=new Date().toISOString().split('T')[0];
+    sessions.push({date:today,secs:seconds});
+    localStorage.setItem('fp_sessions',JSON.stringify(sessions));
+    localStorage.setItem('fp_coins',coins);
+    seconds=0;updateDisplay();renderCharts();
+  }
+  function resetTimer(){clearInterval(timer);isRunning=false;seconds=0;updateDisplay();updateStatus();}
 
-/* ---------- Timer controls ---------- */
-function startTimer(){
-  if(isRunning) return;
-  isRunning = true;
-  const sessionStart = nowISO();
-  timer = setInterval(()=>{
-    seconds++;
-    if(seconds % 10 === 0){
-      coins++; coinCountEl.textContent = coins; saveState();
+  document.getElementById('startBtn').onclick=startTimer;
+  document.getElementById('pauseBtn').onclick=pauseTimer;
+  document.getElementById('resetBtn').onclick=resetTimer;
+
+  // Shop
+  document.getElementById('feedBtn').onclick=()=>{if(coins>=10){coins-=10;coinsEl.textContent=coins;pet.setSpeed(2);status.textContent="Your pet enjoyed the meal!";setTimeout(updateStatus,3000);}else alert("Not enough coins!");};
+  document.getElementById('playBtn').onclick=()=>{if(coins>=15){coins-=15;coinsEl.textContent=coins;pet.setSpeed(2.5);status.textContent="Your pet is playing happily!";setTimeout(updateStatus,3000);}else alert("Not enough coins!");};
+
+  // Navigation
+  const home=document.getElementById('home');
+  const shop=document.getElementById('shop');
+  const progress=document.getElementById('progress');
+  function show(tab){
+    [home,shop,progress].forEach(s=>s.style.display='none');
+    document.querySelectorAll('nav button').forEach(b=>b.classList.remove('active'));
+    document.getElementById('nav'+tab).classList.add('active');
+    document.getElementById(tab.toLowerCase()).style.display='block';
+  }
+  document.getElementById('navHome').onclick=()=>show('Home');
+  document.getElementById('navShop').onclick=()=>show('Shop');
+  document.getElementById('navProgress').onclick=()=>{show('Progress');renderCharts();};
+
+  // Progress charts
+  function aggregate(){
+    const map={};
+    for(const s of sessions){map[s.date]=(map[s.date]||0)+s.secs;}
+    return map;
+  }
+  function renderCharts(){
+    const map=aggregate();
+    const today=new Date();
+    const weekData=[],labels=[];
+    for(let i=6;i>=0;i--){
+      const d=new Date(today);d.setDate(today.getDate()-i);
+      const key=d.toISOString().split('T')[0];
+      labels.push(d.toLocaleDateString(undefined,{weekday:'short'}));
+      weekData.push(Math.round((map[key]||0)/60));
     }
-    updateDisplay();
-  }, 1000);
-  startBtn.disabled = true;
-  pauseBtn.disabled = false;
-  startBig.disabled = true;
-  // store a provisional session object so we can record when paused
-  currentSessionStart = sessionStart;
-}
-function pauseTimer(){
-  if(!isRunning) return;
-  isRunning = false;
-  clearInterval(timer);
-  timer = null;
-  // record session duration and persist
-  sessions.push({ startISO: currentSessionStart, secs: seconds });
-  seconds = 0; // reset session timer for next start (same behavior as before)
-  saveState();
-  updateDisplay();
-  startBtn.disabled = false;
-  pauseBtn.disabled = true;
-  startBig.disabled = false;
-}
-function resetTimer(){
-  if(isRunning) pauseTimer();
-  seconds = 0;
-  updateDisplay();
-}
-startBtn.addEventListener('click', startTimer);
-pauseBtn.addEventListener('click', pauseTimer);
-resetBtn.addEventListener('click', resetTimer);
-startBig.addEventListener('click', startTimer);
-
-/* ---------- Shop actions & reactions ---------- */
-function react(speed, text, msg){
-  petAnim.setSpeed(speed);
-  petStatus.textContent = text;
-  const shopMessage = document.getElementById('shopMessage');
-  if(shopMessage) shopMessage.textContent = msg;
-  petAnim.play();
-  setTimeout(()=>{ petAnim.setSpeed(1); updatePet(); if(shopMessage) shopMessage.textContent = ''; }, 3500);
-}
-function feedPet(){
-  if(coins >= 10){ coins -= 10; coinCountEl.textContent = coins; react(2, 'Your pet enjoyed the meal!', 'You fed your pet!'); saveState(); }
-  else alert('Not enough coins!');
-}
-function playWithPet(){
-  if(coins >= 15){ coins -= 15; coinCountEl.textContent = coins; react(2.6, 'Your pet is playing happily!', 'You played with your pet!'); saveState(); }
-  else alert('Not enough coins!');
-}
-function buySkin(){
-  if(coins >= 50){ coins -= 50; skinsOwned.push('cute-skin'); saveState(); react(1.8,'You bought a skin!','Skin equipped'); }
-  else alert('Not enough coins!');
-}
-function tinyBoost(){
-  if(coins >= 6){ coins -= 6; coins += 1; // small immediate return to make it useful
-    coinCountEl.textContent = coins; saveState(); react(1.8, 'Tiny boost!', 'Boosted!'); }
-  else alert('Not enough coins!');
-}
-
-/* ---------- Persistence load ---------- */
-(function init(){
-  coins = parseInt(localStorage.getItem('fp_coins')||'0');
-  sessions = JSON.parse(localStorage.getItem('fp_sessions')||'[]');
-  skinsOwned = JSON.parse(localStorage.getItem('fp_skins')||'[]');
-  coinCountEl.textContent = coins;
-  updateDisplay();
-})();
-
-/* ---------- Progress charts (daily / weekly / monthly / yearly) ---------- */
-const pieCtx = document.getElementById('pieChart').getContext('2d');
-const barCtx = document.getElementById('barChart').getContext('2d');
-let pieChart = null, barChart = null;
-let currentPeriod = 'daily';
-
-function aggregateSessions(){
-  // sessions: [{startISO, secs}]
-  const map = {}; // key -> total secs
-  for(const s of sessions){
-    const d = new Date(s.startISO);
-    // ensure valid
-    if(isNaN(d)) continue;
-    // store by date (YYYY-MM-DD)
-    const key = d.toISOString().split('T')[0];
-    map[key] = (map[key]||0) + s.secs;
-  }
-  return map;
-}
-
-function getPeriodData(period){
-  const map = aggregateSessions();
-  const now = new Date();
-  if(period === 'daily'){
-    // distribution today by hour: show pie for morning vs afternoon vs evening (simple)
-    const todayKey = now.toISOString().split('T')[0];
-    const todaySecs = map[todayKey] || 0;
-    const restThisWeek = getTotalsForRange(daysAgoDate(6), daysAgoDate(0), map) - todaySecs;
-    return { labels: ['Today', 'Earlier this week'], pie: [Math.round(todaySecs/60), Math.round(restThisWeek/60)], bar: weeklyBarData(map) };
-  } else if(period === 'weekly'){
-    return { labels: lastNDaysLabels(7), pie: null, bar: weeklyBarData(map) };
-  } else if(period === 'monthly'){
-    return { labels: lastNMonthsLabels(6), pie: null, bar: monthlyBarData(map) };
-  } else { // yearly
-    return { labels: lastNYearsLabels(5), pie: null, bar: yearlyBarData(map) };
-  }
-}
-
-function daysAgoDate(n){
-  const d = new Date();
-  d.setDate(d.getDate() - n);
-  return d;
-}
-
-function lastNDaysLabels(n){
-  const arr=[]; const now=new Date();
-  for(let i=n-1;i>=0;i--){ const d=new Date(); d.setDate(now.getDate()-i); arr.push(d.toLocaleDateString(undefined,{weekday:'short'})); }
-  return arr;
-}
-function weeklyBarData(map){
-  const arr=[]; const labels=[];
-  for(let i=6;i>=0;i--){
-    const d = daysAgoDate(i);
-    const key = d.toISOString().split('T')[0];
-    arr.push(Math.round((map[key]||0)/60));
-    labels.push(d.toLocaleDateString(undefined,{weekday:'short'}));
-  }
-  return {labels, data: arr};
-}
-function lastNMonthsLabels(n){
-  const arr=[]; const now=new Date();
-  for(let i=n-1;i>=0;i--){
-    const d=new Date(now.getFullYear(), now.getMonth()-i, 1);
-    arr.push(d.toLocaleDateString(undefined,{month:'short'}));
-  }
-  return arr;
-}
-function monthlyBarData(map){
-  const now=new Date(); const labels=[]; const arr=[];
-  for(let i=5;i>=0;i--){
-    const d = new Date(now.getFullYear(), now.getMonth()-i, 1);
-    const month = d.getMonth(); const year = d.getFullYear();
-    let total=0;
-    for(const k in map){
-      const dt = new Date(k);
-      if(dt.getMonth() === month && dt.getFullYear()===year) total += map[k];
-    }
-    arr.push(Math.round(total/60)); labels.push(d.toLocaleDateString(undefined,{month:'short'}));
-  }
-  return {labels, data: arr};
-}
-function lastNYearsLabels(n){
-  const now=new Date(); const yrs=[];
-  for(let i=n-1;i>=0;i--){ yrs.push(String(now.getFullYear()-i)); }
-  return yrs;
-}
-function yearlyBarData(map){
-  const now=new Date(); const labels=[]; const arr=[];
-  for(let i=4;i>=0;i--){
-    const y = now.getFullYear()-i; let total=0;
-    for(const k in map){ const dt = new Date(k); if(dt.getFullYear()===y) total += map[k]; }
-    arr.push(Math.round(total/60)); labels.push(String(y));
-  }
-  return {labels, data: arr};
-}
-
-function renderCharts(){
-  const pd = getPeriodData(currentPeriod);
-  // Pie: for daily we show Today vs rest of week
-  if(pd.pie){
-    const pieData = {labels: pd.labels, datasets:[{data: pd.pie, backgroundColor: ['var(--accent1)','rgba(255,255,255,0.06)']}]};
+    const totalWeek=weekData.reduce((a,b)=>a+b,0);
+    document.getElementById('weeklyAvg').textContent=(totalWeek/7).toFixed(1);
     if(pieChart) pieChart.destroy();
-    pieChart = new Chart(pieCtx, {type:'doughnut', data: pieData, options:{plugins:{legend:{position:'bottom',labels:{color:'#cde'}}}}});
-  } else {
-    if(pieChart){ pieChart.destroy(); pieChart = null; const ctx = document.getElementById('pieChart').getContext('2d'); ctx.clearRect(0,0,260,200); }
-    // draw placeholder donut showing total this period vs something
-    const total = pd.bar.data.reduce((a,b)=>a+b,0);
-    const other = Math.max(0, Math.round(total*0.2));
-    const pieData = {labels:['Period total','Other'], datasets:[{data:[total,other],backgroundColor:['var(--accent1)','rgba(255,255,255,0.06)']}]};
-    pieChart = new Chart(pieCtx,{type:'doughnut',data:pieData,options:{plugins:{legend:{position:'bottom',labels:{color:'#cde'}}}}});
+    pieChart=new Chart(pieCtx,{type:'doughnut',data:{labels:['Today','Rest of Week'],datasets:[{data:[weekData[6],totalWeek-weekData[6]],backgroundColor:['#8de0c7','#3b3b3b']}]},options:{plugins:{legend:{display:false}}}});
+    if(barChart) barChart.destroy();
+    barChart=new Chart(barCtx,{type:'bar',data:{labels,datasets:[{data:weekData,backgroundColor:'#8de0c7'}]},options:{plugins:{legend:{display:false}},scales:{y:{beginAtZero:true,ticks:{color:'#eee'}},x:{ticks:{color:'#eee'}}}}});
   }
-  // Bar chart
-  const barData = {labels: pd.bar.labels, datasets:[{label:'Focus (minutes)', data: pd.bar.data, backgroundColor:'var(--accent3)'}]};
-  if(barChart) barChart.destroy();
-  barChart = new Chart(barCtx,{type:'bar',data:barData,options:{plugins:{legend:{display:false}},scales:{y:{beginAtZero:true,ticks:{color:'#cde'}},x:{ticks:{color:'#cde'}}}});
-  // weekly average
-  const weeklyTotal = weeklyBarData(aggregateSessions()).data.reduce((a,b)=>a+b,0);
-  const weeklyAvg = (weeklyTotal/7).toFixed(1);
-  document.getElementById('weeklyAvg').textContent = `${weeklyAvg} min`;
-}
-
-/* period tab handling */
-document.querySelectorAll('.tab').forEach(t=>{
-  t.addEventListener('click', e=>{
-    document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
-    t.classList.add('active');
-    currentPeriod = t.dataset.period;
-    renderCharts();
-  });
-});
-
-/* bottom nav */
-document.getElementById('navHome').addEventListener('click', ()=>{ document.querySelectorAll('.nav-btn').forEach(n=>n.classList.remove('active')); document.getElementById('navHome').classList.add('active'); window.scrollTo({top:0,behavior:'smooth'}); });
-document.getElementById('navShop').addEventListener('click', ()=>{ document.querySelectorAll('.nav-btn').forEach(n=>n.classList.remove('active')); document.getElementById('navShop').classList.add('active'); document.querySelector('.side-panel').scrollIntoView({behavior:'smooth'}); });
-document.getElementById('navProgress').addEventListener('click', ()=>{ document.querySelectorAll('.nav-btn').forEach(n=>n.classList.remove('active')); document.getElementById('navProgress').classList.add('active'); document.querySelector('.charts').scrollIntoView({behavior:'smooth'}); });
-
-/* Re-render charts when page visible or data changes */
-renderCharts();
-
-/* Expose functions to global for inline onclicks */
-window.feedPet = feedPet;
-window.playWithPet = playWithPet;
-window.buySkin = buySkin;
-window.tinyBoost = tinyBoost;
-
-/* Accessibility: keyboard */
-document.body.addEventListener('keydown', (e)=>{
-  if(e.code==='Space'){ e.preventDefault(); if(isRunning) pauseTimer(); else startTimer(); }
-});
-
-/* Ensure charts update when sessions change (e.g., after pause) */
-const originalPause = pauseTimer;
-pauseTimer = function(){
-  originalPause();
   renderCharts();
+  updateDisplay();updateStatus();
 };
 </script>
 </body>
 </html>
-
