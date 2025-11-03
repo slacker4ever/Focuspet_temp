@@ -3,114 +3,129 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Focus Pet — Fixed</title>
+<title>Focus Pet — Fixed & Arranged</title>
 
-<!-- Fonts + libs -->
+<!-- Font + libraries -->
 <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&display=swap" rel="stylesheet">
 <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <style>
 :root{
-  --bg: linear-gradient(180deg,#073c35,#0a4540 40%,#05343a);
-  --card: rgba(255,255,255,0.04);
-  --muted:#b9d6d1;
-  --accent1:#8de0c7;
-  --accent2:#c3b4ff;
-  --shadow: 0 10px 30px rgba(0,0,0,0.45);
+  --bg: #0f3d37; /* darker teal */
+  --bg-grad-start: #093734;
+  --card: rgba(255,255,255,0.03);
+  --muted: #b9d6d1;
+  --accent1: #8de0c7;
+  --accent2: #c3b4ff;
+  --shadow: 0 18px 40px rgba(0,0,0,0.45);
   --glass: rgba(255,255,255,0.02);
+  --green-btn: #bff3df;
+  --green-text: #053834;
 }
 *{box-sizing:border-box}
 body{
-  margin:0; font-family:'Fredoka',system-ui,Segoe UI,Roboto; color:#eaf9f4;
-  background:var(--bg); -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale;
+  margin:0;
+  font-family:'Fredoka',system-ui,-apple-system,Segoe UI,Roboto,"Helvetica Neue",Arial;
+  background: linear-gradient(180deg,var(--bg-grad-start),var(--bg));
+  color:#eaf9f4;
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
 }
-.app{max-width:1100px;margin:18px auto;padding:18px;display:flex;gap:22px;align-items:flex-start;}
-header{width:100%;display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:6px}
+.app{max-width:1180px;margin:22px auto;padding:22px;}
+
+/* header */
+.header{
+  display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:14px;
+}
 .brand{display:flex;align-items:center;gap:12px}
-.logo{width:48px;height:48px;border-radius:10px;background:linear-gradient(90deg,var(--accent1),var(--accent2));display:flex;align-items:center;justify-content:center;font-weight:700;color:#053}
+.logo{width:52px;height:52px;border-radius:12px;background:linear-gradient(90deg,var(--accent1),var(--accent2));display:flex;align-items:center;justify-content:center;color:#053;font-weight:800}
 .brand h1{margin:0;font-size:1.05rem}
-.top-cards{display:flex;gap:12px;align-items:center}
-.card-mini{background:var(--card);padding:10px 14px;border-radius:12px;box-shadow:var(--shadow);min-width:110px;text-align:center}
-.label{font-size:0.8rem;color:var(--muted)}
-.val{font-weight:700;font-size:1.05rem;margin-top:6px;color:#e7fff8}
+.header-right{display:flex;gap:12px;align-items:center}
+.card-mini{background:var(--card);padding:12px 16px;border-radius:12px;box-shadow:var(--shadow);min-width:120px;text-align:center}
+.card-mini .label{font-size:0.82rem;color:var(--muted);margin-bottom:6px}
+.card-mini .val{font-weight:800;font-size:1.05rem;color:#e7fff8}
 
-.layout{display:flex;gap:24px;width:100%}
-/* left column (timer) */
-.col-left{width:420px;min-width:320px}
-.focus-area{background:var(--glass);border-radius:18px;padding:18px;box-shadow:var(--shadow);display:flex;flex-direction:column;align-items:center;gap:12px}
-.timer-card{width:360px;height:360px;border-radius:20px;background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.00)); display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative;padding:24px}
-.pet-top{position:absolute;top:14px;left:50%;transform:translateX(-50%)}
-lottie-player{width:150px;height:150px;display:block}
-.timer-inner{text-align:center;position:absolute;bottom:26px;left:50%;transform:translateX(-50%)}
-#time{font-size:2.6rem;font-weight:800;letter-spacing:1px}
-#petStatus{color:var(--muted);margin-top:6px}
+/* layout */
+.layout{display:grid;grid-template-columns:520px 1fr;gap:22px;align-items:start}
 
-/* ring SVG overlay */
-.ring-wrap{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none}
-svg { width:100%; height:100% }
+/* left timer card */
+.timer-container{background:linear-gradient(180deg,rgba(255,255,255,0.01),rgba(255,255,255,0.00));border-radius:18px;padding:26px;box-shadow:var(--shadow)}
+.timer-card{width:100%;border-radius:18px;background:var(--glass);padding:26px;display:flex;flex-direction:column;align-items:center;position:relative}
+.pet-top{position:relative;top:6px}
+lottie-player{width:160px;height:160px;display:block}
+.ring-wrap{width:360px;height:360px;position:absolute;left:26px;top:26px;pointer-events:none}
+.timer-inner{position:relative;margin-top:26px;text-align:center}
+#time{font-size:2.8rem;font-weight:800}
+#petStatus{color:var(--muted);margin-top:8px}
 
 /* controls */
-.controls{display:flex;gap:12px;margin-top:12px}
-button.control{background:var(--accent1);border:none;color:#053;padding:10px 18px;border-radius:12px;font-weight:700;cursor:pointer;box-shadow:var(--shadow)}
-button.control.secondary{background:transparent;border:1px solid rgba(255,255,255,0.08);color:var(--muted)}
+.controls{display:flex;gap:12px;margin-top:18px;justify-content:center}
+button.control{background:var(--green-btn);color:var(--green-text);border:none;padding:12px 20px;border-radius:12px;font-weight:700;cursor:pointer;box-shadow:0 10px 20px rgba(0,0,0,0.25)}
+button.control.secondary{background:transparent;border:2px solid rgba(255,255,255,0.08);color:var(--muted)}
 
 /* right column */
-.col-right{flex:1;display:flex;flex-direction:column;gap:16px}
-.panel{background:var(--card);border-radius:14px;padding:14px;box-shadow:var(--shadow)}
-.shop-grid{display:flex;flex-wrap:wrap;gap:10px}
-.shop-item{background:rgba(255,255,255,0.02);padding:10px;border-radius:10px;width:calc(50% - 6px);text-align:center}
-.shop-item img{width:80px;height:80px;object-fit:contain;border-radius:10px;display:block;margin:6px auto}
+.right-col{display:flex;flex-direction:column;gap:18px}
+.panel{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));border-radius:14px;padding:16px;box-shadow:var(--shadow)}
+.shop-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+.shop-item{background:rgba(255,255,255,0.02);padding:12px;border-radius:12px;display:flex;flex-direction:column;align-items:flex-start;gap:8px;min-height:64px}
+.shop-item .title{display:flex;align-items:center;gap:8px;font-weight:700}
+.small-buy{background:var(--green-btn);color:var(--green-text);border:none;padding:6px 10px;border-radius:10px;cursor:pointer;font-weight:700}
 
-/* small responsive */
-@media(max-width:880px){
-  .app{padding:12px}
-  .layout{flex-direction:column;align-items:center}
-  .col-left,.col-right{width:100%}
+/* progress panel */
+.tab-row{display:flex;gap:10px;margin-bottom:12px}
+.tab{padding:8px 14px;border-radius:999px;background:transparent;border:1px solid rgba(255,255,255,0.06);cursor:pointer;color:var(--muted)}
+.tab.active{background:linear-gradient(90deg,var(--accent1),var(--accent2));color:#052;font-weight:800}
+
+/* chart area */
+#barChart{width:100%;height:190px;display:block}
+
+/* feed/play/boost panels (expanded) */
+.options-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-top:12px}
+.option{background:rgba(255,255,255,0.02);border-radius:10px;padding:8px;text-align:center}
+.option img{width:88px;height:88px;object-fit:contain;border-radius:10px;margin:6px auto}
+
+/* responsive */
+@media (max-width:980px){
+  .layout{grid-template-columns:1fr;align-items:stretch}
+  .ring-wrap{display:none}
+  lottie-player{width:120px;height:120px}
 }
 </style>
 </head>
 <body>
-<div class="app">
-  <header style="width:100%">
-    <div class="brand">
-      <div class="logo">🐾</div>
-      <div>
-        <h1>Focus Pet</h1>
-        <div style="font-size:0.9rem;color:var(--muted)">Raise your pet by focusing!</div>
+  <div class="app">
+    <div class="header">
+      <div class="brand">
+        <div class="logo">🐾</div>
+        <div>
+          <h1>Focus Pet</h1>
+          <div style="font-size:0.9rem;color:var(--muted)">Raise your pet by focusing!</div>
+        </div>
+      </div>
+
+      <div class="header-right">
+        <div class="card-mini"><div class="label">Total Focus Time</div><div class="val" id="totalFocusVal">0 m</div></div>
+        <div class="card-mini"><div class="label">Coins</div><div class="val" id="coinCount">0</div></div>
       </div>
     </div>
 
-    <div class="top-cards">
-      <div class="card-mini">
-        <div class="label">Total Focus Time</div>
-        <div class="val" id="totalFocusVal">0 m</div>
-      </div>
-      <div class="card-mini">
-        <div class="label">Coins</div>
-        <div class="val" id="coinCount">0</div>
-      </div>
-    </div>
-  </header>
-
-  <div class="layout" style="width:100%">
-    <!-- LEFT: Timer -->
-    <div class="col-left">
-      <div class="focus-area">
-        <div class="timer-card" role="region" aria-label="timer card">
-          <div class="pet-top">
-            <!-- public lottie file so GitHub Pages works without uploading extra files -->
-            <lottie-player id="petAnim" src="https://lottie.host/8e26ef53-97c3-49f5-b9e7-6c8a2ab7a8a5/OwJKjw5mWL.json" background="transparent" speed="1" loop autoplay></lottie-player>
+    <div class="layout">
+      <!-- LEFT: big timer -->
+      <div class="timer-container">
+        <div class="timer-card" role="application" aria-label="Focus timer">
+          <!-- ring svg sits behind the central content (desktop only) -->
+          <div class="ring-wrap" aria-hidden="true">
+            <svg viewBox="0 0 360 360" xmlns="http://www.w3.org/2000/svg">
+              <defs><linearGradient id="g1"><stop offset="0" stop-color="#8de0c7"/><stop offset="1" stop-color="#c3b4ff"/></linearGradient></defs>
+              <circle cx="180" cy="180" r="140" stroke="rgba(255,255,255,0.03)" stroke-width="14" fill="none"></circle>
+              <circle id="ring" cx="180" cy="180" r="140" stroke="url(#g1)" stroke-width="14" fill="none" stroke-linecap="round" transform="rotate(-90 180 180)"></circle>
+            </svg>
           </div>
 
-          <div class="ring-wrap" aria-hidden="true">
-            <svg viewBox="0 0 320 320" preserveAspectRatio="xMidYMid meet">
-              <defs>
-                <linearGradient id="g1"><stop offset="0" stop-color="#8de0c7"/><stop offset="1" stop-color="#c3b4ff"/></linearGradient>
-              </defs>
-              <circle cx="160" cy="160" r="130" stroke="rgba(255,255,255,0.03)" stroke-width="12" fill="none"></circle>
-              <circle id="ring" cx="160" cy="160" r="130" stroke="url(#g1)" stroke-width="12" fill="none" stroke-linecap="round" transform="rotate(-90 160 160)"></circle>
-            </svg>
+          <div class="pet-top">
+            <!-- working public Lottie so it runs directly on GH pages -->
+            <lottie-player id="petAnim" src="https://lottie.host/8e26ef53-97c3-49f5-b9e7-6c8a2ab7a8a5/OwJKjw5mWL.json" background="transparent" speed="1" loop autoplay></lottie-player>
           </div>
 
           <div class="timer-inner">
@@ -119,207 +134,193 @@ button.control.secondary{background:transparent;border:1px solid rgba(255,255,25
           </div>
         </div>
 
-        <div class="controls" style="justify-content:center;">
+        <div class="controls">
           <button class="control" id="startBtn">Start</button>
           <button class="control secondary" id="pauseBtn">Pause</button>
           <button class="control" id="resetBtn">Reset</button>
         </div>
       </div>
-    </div>
 
-    <!-- RIGHT: Shop / Progress -->
-    <div class="col-right">
-      <div class="panel">
-        <h3 style="margin-top:0">Shop</h3>
-        <div class="shop-grid">
-          <div class="shop-item">
-            🍖 Feed<br><strong>10 coins</strong><br>
-            <button class="shop-open" data-panel="feedOptions">Buy</button>
-          </div>
-          <div class="shop-item">
-            🧸 Play<br><strong>15 coins</strong><br>
-            <button class="shop-open" data-panel="playOptions">Buy</button>
-          </div>
-          <div class="shop-item">
-            🌈 Skin<br><strong>50 coins</strong><br>
-            <button id="skinBtn">Buy</button>
-          </div>
-          <div class="shop-item">
-            ✨ Boost<br><strong>6 coins</strong><br>
-            <button class="shop-open" data-panel="boostOptions">Buy</button>
-          </div>
-        </div>
+      <!-- RIGHT column: Shop + Progress -->
+      <div class="right-col">
+        <div class="panel">
+          <h3 style="margin:0 0 12px 0">Shop</h3>
 
-        <!-- feed options -->
-        <div id="feedOptions" class="panel" style="margin-top:12px;display:none">
-          <h4 style="margin:6px 0">Feed Options</h4>
           <div class="shop-grid">
             <div class="shop-item">
-              <img src="https://i.pinimg.com/originals/4a/32/52/4a32526ce384e43b0e8536faac321e8a.gif" alt="">
-              🥩 Meat<br><strong>5 coins</strong><br>
-              <button class="buyFeed" data-type="Meat" data-price="5">Buy</button>
+              <div class="title">🍖 Feed</div>
+              <div style="color:var(--muted)">10 coins</div>
+              <button class="small-buy shop-open" data-panel="feedOptions">Buy</button>
             </div>
+
             <div class="shop-item">
-              <img src="https://i.pinimg.com/originals/a1/ab/f8/a1abf8bad885fdaa6aaa757319c6d3ab.gif" alt="">
-              🥛 Milk<br><strong>3 coins</strong><br>
-              <button class="buyFeed" data-type="Milk" data-price="3">Buy</button>
+              <div class="title">🧸 Play</div>
+              <div style="color:var(--muted)">15 coins</div>
+              <button class="small-buy shop-open" data-panel="playOptions">Buy</button>
             </div>
+
             <div class="shop-item">
-              <img src="https://i.pinimg.com/originals/ee/f6/f5/eef6f575d4195d5809716b48cd12b250.gif" alt="">
-              🐟 Fish<br><strong>6 coins</strong><br>
-              <button class="buyFeed" data-type="Fish" data-price="6">Buy</button>
+              <div class="title">🌈 Skin</div>
+              <div style="color:var(--muted)">50 coins</div>
+              <button class="small-buy" id="skinBtn">Buy</button>
             </div>
+
             <div class="shop-item">
-              <img src="https://i.pinimg.com/originals/3f/5d/f4/3f5df47b4aba75d25d954700f32e0a47.gif" alt="">
-              🍪 Biscuits<br><strong>2 coins</strong><br>
-              <button class="buyFeed" data-type="Biscuits" data-price="2">Buy</button>
+              <div class="title">✨ Boost</div>
+              <div style="color:var(--muted)">25 coins</div>
+              <button class="small-buy shop-open" data-panel="boostOptions">Buy</button>
             </div>
           </div>
-        </div>
 
-        <!-- play options -->
-        <div id="playOptions" class="panel" style="margin-top:12px;display:none">
-          <h4 style="margin:6px 0">Play Options</h4>
-          <div class="shop-grid">
-            <div class="shop-item">
-              <img src="https://i.pinimg.com/originals/eb/2a/53/eb2a5392a056ebcfc1f9c0326d6deecf.gif" alt="">
-              🎾 Ball<br><strong>8 coins</strong><br>
-              <button class="buyToy" data-type="Ball" data-price="8">Buy</button>
+          <!-- feed options -->
+          <div id="feedOptions" class="options-grid" style="display:none;margin-top:12px">
+            <div class="option">
+              <img src="https://i.pinimg.com/originals/4a/32/52/4a32526ce384e43b0e8536faac321e8a.gif" alt="Meat">
+              <div>🥩 Meat — 5</div>
+              <button class="small-buy buyFeed" data-type="Meat" data-price="5">Buy</button>
             </div>
-            <div class="shop-item">
-              <img src="https://i.pinimg.com/originals/a1/62/33/a16233a2a7c65799a9e9b4c626ff865f.gif" alt="">
-              🔔 Bell<br><strong>6 coins</strong><br>
-              <button class="buyToy" data-type="Bell" data-price="6">Buy</button>
+            <div class="option">
+              <img src="https://i.pinimg.com/originals/a1/ab/f8/a1abf8bad885fdaa6aaa757319c6d3ab.gif" alt="Milk">
+              <div>🥛 Milk — 3</div>
+              <button class="small-buy buyFeed" data-type="Milk" data-price="3">Buy</button>
             </div>
-            <div class="shop-item">
-              <img src="https://i.pinimg.com/originals/46/fc/ea/46fceaad10cc30bc7bbd74a83655a09b.gif" alt="">
-              🐭 Mouse Toy<br><strong>7 coins</strong><br>
-              <button class="buyToy" data-type="Mouse Toy" data-price="7">Buy</button>
+            <div class="option">
+              <img src="https://i.pinimg.com/originals/ee/f6/f5/eef6f575d4195d5809716b48cd12b250.gif" alt="Fish">
+              <div>🐟 Fish — 6</div>
+              <button class="small-buy buyFeed" data-type="Fish" data-price="6">Buy</button>
             </div>
-            <div class="shop-item">
-              <img src="https://i.pinimg.com/originals/4d/1a/04/4d1a0481849a8f03a4c0c08703b4c32a.gif" alt="">
-              🌀 Spinner<br><strong>10 coins</strong><br>
-              <button class="buyToy" data-type="Spinner" data-price="10">Buy</button>
+            <div class="option">
+              <img src="https://i.pinimg.com/originals/3f/5d/f4/3f5df47b4aba75d25d954700f32e0a47.gif" alt="Biscuits">
+              <div>🍪 Biscuits — 2</div>
+              <button class="small-buy buyFeed" data-type="Biscuits" data-price="2">Buy</button>
             </div>
           </div>
-        </div>
 
-        <!-- boost options -->
-        <div id="boostOptions" class="panel" style="margin-top:12px;display:none">
-          <h4 style="margin:6px 0">Boost Options</h4>
-          <div class="shop-grid">
-            <div class="shop-item">
-              <img src="https://i.pinimg.com/originals/14/2b/56/142b56a4a2d5f8f1e2dbf4f2f7c1e3d1.gif" alt="">
-              🍬 Happy Treat<br><strong>5 coins</strong><br>
-              <button class="buyBoost" data-type="Happy Treat" data-price="5">Buy</button>
+          <!-- play options -->
+          <div id="playOptions" class="options-grid" style="display:none;margin-top:12px">
+            <div class="option">
+              <img src="https://i.pinimg.com/originals/eb/2a/53/eb2a5392a056ebcfc1f9c0326d6deecf.gif" alt="Ball">
+              <div>🎾 Ball — 8</div>
+              <button class="small-buy buyToy" data-type="Ball" data-price="8">Buy</button>
             </div>
-            <div class="shop-item">
-              <img src="https://i.pinimg.com/originals/26/3a/7d/263a7d2f8b1d4c1e6a1c4e8b5d3a7f2b.gif" alt="">
-              🟦 Boost Buttons<br><strong>7 coins</strong><br>
-              <button class="buyBoost" data-type="Boost Buttons" data-price="7">Buy</button>
+            <div class="option">
+              <img src="https://i.pinimg.com/originals/a1/62/33/a16233a2a7c65799a9e9b4c626ff865f.gif" alt="Bell">
+              <div>🔔 Bell — 6</div>
+              <button class="small-buy buyToy" data-type="Bell" data-price="6">Buy</button>
             </div>
-            <div class="shop-item">
-              <img src="https://i.pinimg.com/originals/7f/91/2b/7f912b8e0c1b3a2f7f0c8b2f9d1e3c4a.gif" alt="">
-              🎀 Accessory Boost<br><strong>10 coins</strong><br>
-              <button class="buyBoost" data-type="Accessory Boost" data-price="10">Buy</button>
+            <div class="option">
+              <img src="https://i.pinimg.com/originals/46/fc/ea/46fceaad10cc30bc7bbd74a83655a09b.gif" alt="Mouse">
+              <div>🐭 Mouse — 7</div>
+              <button class="small-buy buyToy" data-type="Mouse" data-price="7">Buy</button>
             </div>
-            <div class="shop-item">
-              <img src="https://i.pinimg.com/originals/5c/12/ab/5c12ab7f1d3e4a8f6d5b1f2c3e6a7d1b.gif" alt="">
-              🧪 Cheer Potion<br><strong>12 coins</strong><br>
-              <button class="buyBoost" data-type="Cheer Potion" data-price="12">Buy</button>
+            <div class="option">
+              <img src="https://i.pinimg.com/originals/4d/1a/04/4d1a0481849a8f03a4c0c08703b4c32a.gif" alt="Spinner">
+              <div>🌀 Spinner — 10</div>
+              <button class="small-buy buyToy" data-type="Spinner" data-price="10">Buy</button>
             </div>
           </div>
+
+          <!-- boost options -->
+          <div id="boostOptions" class="options-grid" style="display:none;margin-top:12px">
+            <div class="option">
+              <img src="https://i.pinimg.com/originals/14/2b/56/142b56a4a2d5f8f1e2dbf4f2f7c1e3d1.gif" alt="Happy Treat">
+              <div>🍬 Happy Treat — 5</div>
+              <button class="small-buy buyBoost" data-type="Happy Treat" data-price="5">Buy</button>
+            </div>
+            <div class="option">
+              <img src="https://i.pinimg.com/originals/26/3a/7d/263a7d2f8b1d4c1e6a1c4e8b5d3a7f2b.gif" alt="Boost Buttons">
+              <div>🟦 Boost Buttons — 7</div>
+              <button class="small-buy buyBoost" data-type="Boost Buttons" data-price="7">Buy</button>
+            </div>
+            <div class="option">
+              <img src="https://i.pinimg.com/originals/7f/91/2b/7f912b8e0c1b3a2f7f0c8b2f9d1e3c4a.gif" alt="Accessory Boost">
+              <div>🎀 Accessory Boost — 10</div>
+              <button class="small-buy buyBoost" data-type="Accessory Boost" data-price="10">Buy</button>
+            </div>
+            <div class="option">
+              <img src="https://i.pinimg.com/originals/5c/12/ab/5c12ab7f1d3e4a8f6d5b1f2c3e6a7d1b.gif" alt="Cheer Potion">
+              <div>🧪 Cheer Potion — 12</div>
+              <button class="small-buy buyBoost" data-type="Cheer Potion" data-price="12">Buy</button>
+            </div>
+          </div>
+
         </div>
 
+        <div class="panel">
+          <h3 style="margin:0 0 12px 0">Progress</h3>
+          <div class="tab-row">
+            <button class="tab active" data-period="daily">Daily</button>
+            <button class="tab" data-period="weekly">Weekly</button>
+            <button class="tab" data-period="monthly">Monthly</button>
+            <button class="tab" data-period="yearly">Yearly</button>
+          </div>
+          <canvas id="barChart"></canvas>
+          <div style="display:flex;justify-content:space-between;margin-top:14px;color:var(--muted)">
+            <div>Weekly average</div><div id="weeklyAvg">0 min</div>
+          </div>
+        </div>
       </div>
-
-      <div class="panel">
-        <h3 style="margin-top:0">Progress</h3>
-        <div class="period-tabs" style="display:flex;gap:8px;margin-bottom:12px">
-          <button class="tab active" data-period="daily">Daily</button>
-          <button class="tab" data-period="weekly">Weekly</button>
-          <button class="tab" data-period="monthly">Monthly</button>
-          <button class="tab" data-period="yearly">Yearly</button>
-        </div>
-        <div class="charts" style="align-items:stretch">
-          <canvas id="barChart" width="600" height="200" style="max-width:100%"></canvas>
-          <div id="weeklyAvgContainer" style="display:flex;justify-content:space-between;margin-top:10px;color:var(--muted)"><span>Weekly average</span><span id="weeklyAvg">0 min</span></div>
-        </div>
-      </div>
-    </div> <!-- end right column -->
-
-  </div> <!-- end layout -->
-</div> <!-- end app -->
+    </div> <!-- layout -->
+  </div> <!-- app -->
 
 <script>
-/*
-  Robust unified script:
-  - initializes elements safely
-  - keeps ids consistent
-  - handles localStorage for coins/sessions
-  - closes modals when clicking outside
-  - Chart.js safe init
-*/
-
-// LocalStorage keys
-const LS_COINS = 'fp_coins_v1';
-const LS_SESS = 'fp_sessions_v1';
+/* ---------- Safe unified script ---------- */
+// Keys
+const LS_COINS = 'fp_coins_v2';
+const LS_SESS = 'fp_sessions_v2';
 
 // state
 let secs = 0, timer = null, isRun = false, startISO = null;
 let coins = parseInt(localStorage.getItem(LS_COINS) || '0', 10) || 0;
-let sess = JSON.parse(localStorage.getItem(LS_SESS) || '[]');
+let sess = JSON.parse(localStorage.getItem(LS_SESS) || '[]') || [];
 
-// element refs
+// elements
 const timeEl = document.getElementById('time');
 const coinEl = document.getElementById('coinCount');
-const pet = document.getElementById('petAnim');
+const pet = document.getElementById('petAnim'); // lottie-player
 const statusEl = document.getElementById('petStatus');
-const totalFocusVal = document.getElementById('totalFocusVal');
+const totalFocusEl = document.getElementById('totalFocusVal');
 const ring = document.getElementById('ring');
+const barCanvas = document.getElementById('barChart');
 
 const feedPanel = document.getElementById('feedOptions');
 const playPanel = document.getElementById('playOptions');
 const boostPanel = document.getElementById('boostOptions');
 
-const startBtn = document.getElementById('startBtn');
-const pauseBtn = document.getElementById('pauseBtn');
-const resetBtn = document.getElementById('resetBtn');
-const skinBtn = document.getElementById('skinBtn');
-
-const shopOpenButtons = Array.from(document.querySelectorAll('.shop-open'));
-
-// ring circumference
-const R = 130;
+// handle ring circumference
+const R = 140; // matches svg r
 const C = 2 * Math.PI * R;
-if (ring){
-  ring.style.strokeDasharray = C;
-  ring.style.strokeDashoffset = C;
-}
+if (ring) { ring.style.strokeDasharray = C; ring.style.strokeDashoffset = C; }
 
-// format helpers
+// formatting helpers
 function fmt(s){ const m = Math.floor(s/60).toString().padStart(2,'0'); const ss = (s%60).toString().padStart(2,'0'); return `${m}:${ss}`; }
 function fmtHM(t){ const h = Math.floor(t/3600), m = Math.floor((t%3600)/60); return h>0? `${h} h ${m} m` : `${m} m`; }
-function totalSecs(){ return (sess.reduce((a,b)=>a+b.secs,0) || 0) + secs; }
+function totalSecs(){ return (sess.reduce((a,b)=>a+b.secs,0)||0) + secs; }
 
-// display update
+// update UI
 function updDisp(){
   timeEl.textContent = fmt(secs);
-  if (ring) ring.style.strokeDashoffset = C - (secs % 60)/60 * C;
+  if (ring) ring.style.strokeDashoffset = C - ((secs % 60)/60) * C;
   coinEl.textContent = coins;
-  totalFocusVal.textContent = fmtHM(totalSecs());
-  updPetState();
+  totalFocusEl.textContent = fmtHM(totalSecs());
+  updatePetByTime();
 }
 
-// pet visuals based on secs
-function updPetState(){
+// safe pet speed setter - set speed attribute on lottie-player (works)
+function setPetSpeed(s){
+  try{
+    if (pet && pet.setAttribute) pet.setAttribute('speed', String(s));
+  }catch(e){ /* swallow */ }
+}
+
+function updatePetByTime(){
   if (!pet) return;
-  if (secs < 30){ try{ pet.setSpeed(0.6); }catch(e){} statusEl.textContent='Your pet is sleepy...'; }
-  else if (secs < 60){ try{ pet.setSpeed(1); }catch(e){} statusEl.textContent='Your pet is waking up!'; }
-  else{ try{ pet.setSpeed(1.5); }catch(e){} statusEl.textContent='Your pet is super happy!'; }
+  if (secs < 30){ setPetSpeed(0.6); statusEl.textContent = 'Your pet is sleepy...'; }
+  else if (secs < 60){ setPetSpeed(1); statusEl.textContent = 'Your pet is waking up!'; }
+  else { setPetSpeed(1.5); statusEl.textContent = 'Your pet is super happy!'; }
 }
 
-// timer controls
+// timer functions
 function startT(){
   if (isRun) return;
   isRun = true;
@@ -328,106 +329,100 @@ function startT(){
     secs++;
     // reward coin every 10s
     if (secs % 10 === 0){
-      coins++;
-      localStorage.setItem(LS_COINS, coins);
+      coins++; localStorage.setItem(LS_COINS, coins);
     }
     updDisp();
-  },1000);
+  }, 1000);
 }
-function pauseT(){ if (!isRun) return; isRun = false; clearInterval(timer); timer=null; updDisp(); }
+function pauseT(){
+  if (!isRun) return;
+  isRun = false; clearInterval(timer); timer = null; updDisp();
+}
 function resetT(){
   if (secs > 0 && startISO){
     sess.push({ startISO, secs });
     localStorage.setItem(LS_SESS, JSON.stringify(sess));
   }
-  secs = 0; startISO = null; isRun = false; clearInterval(timer); timer=null;
-  updDisp(); drawChart(); 
+  secs = 0; startISO = null; isRun = false; clearInterval(timer); timer = null;
+  updDisp(); drawChart();
 }
 
-// bind timer buttons safely
-if (startBtn) startBtn.addEventListener('click', startT);
-if (pauseBtn) pauseBtn.addEventListener('click', pauseT);
-if (resetBtn) resetBtn.addEventListener('click', resetT);
+// bind buttons
+document.getElementById('startBtn').addEventListener('click', startT);
+document.getElementById('pauseBtn').addEventListener('click', pauseT);
+document.getElementById('resetBtn').addEventListener('click', resetT);
 
-// react helper
-function react(spd, txt){
-  try{ if (pet && pet.setSpeed) pet.setSpeed(spd); }catch(e){}
+// react helper (speed + message)
+function react(speed, txt, timeout = 3000){
+  setPetSpeed(speed);
   if (statusEl) statusEl.textContent = txt;
-  setTimeout(()=>updPetState(), 3000);
+  setTimeout(()=> updatePetByTime(), timeout);
 }
 
 // shop open toggles
-shopOpenButtons.forEach(btn=>{
-  btn.addEventListener('click', ()=> {
-    const p = btn.dataset.panel;
-    togglePanel(p);
+document.querySelectorAll('.shop-open').forEach(btn=>{
+  btn.addEventListener('click', (e)=>{
+    const panelId = btn.dataset.panel;
+    // close others
+    [feedPanel, playPanel, boostPanel].forEach(p => { if (p && p.id !== panelId) p.style.display = 'none'; });
+    const el = document.getElementById(panelId);
+    if (el) el.style.display = el.style.display === 'block' ? 'none' : 'block';
   });
 });
-function togglePanel(id){
-  // hide others
-  [feedPanel, playPanel, boostPanel].forEach(p => { if (p && p.id !== id) p.style.display = 'none'; });
-  const el = document.getElementById(id);
-  if (!el) return;
-  el.style.display = (el.style.display === 'block') ? 'none' : 'block';
-}
 
-// close panels on outside click
+// click outside to close panels
 window.addEventListener('click', (e)=>{
-  // if clicked inside any panel or any shop-open button -> do nothing
-  if (e.target.closest('.panel') || e.target.closest('.shop-open') || e.target.closest('.buyFeed') || e.target.closest('.buyToy') || e.target.closest('.buyBoost')) return;
-  // else hide feed/play/boost panels
-  [feedPanel, playPanel, boostPanel].forEach(p => { if (p) p.style.display = 'none'; });
+  const clickedInside = e.target.closest('.options-grid') || e.target.closest('.shop-open') || e.target.closest('.small-buy') || e.target.closest('.shop-item');
+  if (!clickedInside){
+    [feedPanel, playPanel, boostPanel].forEach(p => { if (p) p.style.display = 'none'; });
+  }
 });
 
-// skin & boost & buy logic (delegated)
-if (skinBtn){
-  skinBtn.addEventListener('click', ()=>{
-    if (coins >= 50){ coins -= 50; localStorage.setItem(LS_COINS, coins); updDisp(); react(1.8,'New look!'); }
-    else alert('Not enough coins');
-  });
-}
+// skin button purchase
+const skinBtn = document.getElementById('skinBtn');
+if (skinBtn) skinBtn.addEventListener('click', ()=>{
+  if (coins >= 50){ coins -= 50; localStorage.setItem(LS_COINS, coins); updDisp(); react(1.8, 'New look!'); }
+  else alert('Not enough coins');
+});
 
-// buy handlers
+// attach buy listeners (delegated style)
 function attachBuyListeners(){
   document.querySelectorAll('.buyFeed').forEach(btn=>{
-    btn.onclick = ()=>{
+    btn.onclick = () => {
       const price = parseInt(btn.dataset.price,10) || 0;
       const type = btn.dataset.type || 'Food';
-      if (coins >= price){
-        coins -= price; localStorage.setItem(LS_COINS, coins); updDisp(); react(1.8, `${type} eaten!`);
-      } else alert('Not enough coins');
+      if (coins >= price){ coins -= price; localStorage.setItem(LS_COINS, coins); updDisp(); react(1.8, `${type} eaten!`); }
+      else alert('Not enough coins');
     };
   });
   document.querySelectorAll('.buyToy').forEach(btn=>{
-    btn.onclick = ()=>{
+    btn.onclick = () => {
       const price = parseInt(btn.dataset.price,10) || 0;
       const type = btn.dataset.type || 'Toy';
-      if (coins >= price){
-        coins -= price; localStorage.setItem(LS_COINS, coins); updDisp(); react(2, `${type} played!`);
-      } else alert('Not enough coins');
+      if (coins >= price){ coins -= price; localStorage.setItem(LS_COINS, coins); updDisp(); react(2, `${type} played!`); }
+      else alert('Not enough coins');
     };
   });
   document.querySelectorAll('.buyBoost').forEach(btn=>{
-    btn.onclick = ()=>{
+    btn.onclick = () => {
       const price = parseInt(btn.dataset.price,10) || 0;
       const type = btn.dataset.type || 'Boost';
       if (coins >= price){
         coins -= price; localStorage.setItem(LS_COINS, coins); updDisp();
         switch(type){
-          case 'Happy Treat': react(2,'Yum! Happy Treat!'); break;
-          case 'Boost Buttons': react(2.2,'Excited with Boost Buttons!'); break;
-          case 'Accessory Boost': react(1.8,'Looking fabulous with Accessory!'); break;
-          case 'Cheer Potion': react(2.5,'Feeling super cheered!'); break;
-          default: react(1.8, `${type} used!`);
+          case 'Happy Treat': react(2, 'Yum! Happy Treat!'); break;
+          case 'Boost Buttons': react(2.2, 'Excited with Boost Buttons!'); break;
+          case 'Accessory Boost': react(1.8, 'Looking fabulous with Accessory!'); break;
+          case 'Cheer Potion': react(2.5, 'Feeling super cheered!'); break;
+          default: react(1.6, `${type} used!`);
         }
       } else alert('Not enough coins');
     };
   });
 }
 
-// Chart functions - safe
+// Chart helpers
 let curPeriod = 'daily';
-const barCtxEl = document.getElementById('barChart');
 let barChart = null;
 
 function agg(){
@@ -436,7 +431,7 @@ function agg(){
     const d = new Date(s.startISO);
     if (!isNaN(d)){
       const k = d.toISOString().split('T')[0];
-      m[k] = (m[k] || 0) + (s.secs || 0);
+      m[k] = (m[k]||0) + (s.secs || 0);
     }
   }
   return m;
@@ -456,61 +451,53 @@ function weekly(m){
 }
 function monthly(m){
   const labels = [], data = [];
-  const n = new Date();
+  const now = new Date();
   for (let i=5;i>=0;i--){
-    const d = new Date(n.getFullYear(), n.getMonth()-i, 1);
+    const d = new Date(now.getFullYear(), now.getMonth()-i, 1);
     labels.push(d.toLocaleDateString(undefined,{month:'short'}));
-    let t = 0;
-    for (const k in m){
-      const dt = new Date(k);
-      if (dt.getMonth()===d.getMonth() && dt.getFullYear()===d.getFullYear()) t+=m[k];
-    }
+    let t=0;
+    for (const k in m){ const dt = new Date(k); if (dt.getMonth()===d.getMonth() && dt.getFullYear()===d.getFullYear()) t+=m[k]; }
     data.push(Math.round(t/60));
   }
   return {labels, data};
 }
 function yearly(m){
   const labels = [], data = [];
-  const n = new Date();
+  const now = new Date();
   for (let i=4;i>=0;i--){
-    const y = n.getFullYear()-i;
+    const y = now.getFullYear() - i;
     labels.push(String(y));
-    let t = 0;
-    for (const k in m){
-      const dt = new Date(k);
-      if (dt.getFullYear() === y) t+=m[k];
-    }
+    let t=0;
+    for (const k in m){ const dt = new Date(k); if (dt.getFullYear()===y) t+=m[k]; }
     data.push(Math.round(t/60));
   }
   return {labels, data};
 }
+
 function getBars(p){
   const m = agg();
   if (p === 'daily' || p === 'weekly') return weekly(m);
   if (p === 'monthly') return monthly(m);
   return yearly(m);
 }
+
 function drawChart(){
   try{
     const b = getBars(curPeriod);
-    if (!barCtxEl) return;
-    if (barChart) { barChart.destroy(); barChart = null; }
-    barChart = new Chart(barCtxEl.getContext('2d'), {
+    if (!barCanvas) return;
+    if (barChart) barChart.destroy();
+    barChart = new Chart(barCanvas.getContext('2d'), {
       type:'bar',
-      data:{ labels: b.labels, datasets: [{ data: b.data, backgroundColor: '#8de0c7' }] },
+      data:{ labels: b.labels, datasets:[{ data: b.data, backgroundColor: '#8de0c7' }] },
       options:{ plugins:{legend:{display:false}}, scales:{ y:{ beginAtZero:true } } }
     });
-    const w = (weekly(agg()).data.reduce((a,b)=>a+b,0) || 0) / 7;
-    const wa = document.getElementById('weeklyAvg');
-    if (wa) wa.textContent = w.toFixed(1) + ' min';
-  } catch(e){
-    console.warn('chart error', e);
-  }
+    const w = (weekly(agg()).data.reduce((a,b)=>a+b,0) || 0)/7;
+    const wa = document.getElementById('weeklyAvg'); if (wa) wa.textContent = w.toFixed(1) + ' min';
+  }catch(e){ console.warn('chart draw err', e); }
 }
 
-// tab handlers
 document.querySelectorAll('.tab').forEach(t=>{
-  t.addEventListener('click', ()=>{
+  t.addEventListener('click', ()=> {
     document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
     t.classList.add('active');
     curPeriod = t.dataset.period;
@@ -518,20 +505,20 @@ document.querySelectorAll('.tab').forEach(t=>{
   });
 });
 
-// init
+// Init
 function init(){
-  // restore
+  // restore data
   coins = parseInt(localStorage.getItem(LS_COINS) || '0', 10) || 0;
-  sess = JSON.parse(localStorage.getItem(LS_SESS) || '[]') || [];
+  try{ sess = JSON.parse(localStorage.getItem(LS_SESS) || '[]') || []; }catch(e){ sess = []; }
   updDisp();
   attachBuyListeners();
   drawChart();
 }
 init();
 
-// Expose some helpers to console for debugging (if user wants)
-window._fp = { startT, pauseT, resetT, updDisp, drawChart, state: ()=>({secs,coins,sess}) };
-
+/* Expose small debug helpers if you open console:
+   window.focusPet = { startT, pauseT, resetT, state: ()=>({secs,coins,sess}) }
+*/
 </script>
 </body>
 </html>
