@@ -112,7 +112,6 @@ button.control{
 <section class="focus-area">
   <div class="timer-card">
     <div class="pet-top">
-      <!-- ✅ Working public Lottie animation for GitHub hosting -->
       <lottie-player id="petAnim" src="https://lottie.host/8e26ef53-97c3-49f5-b9e7-6c8a2ab7a8a5/OwJKjw5mWL.json" background="transparent" speed="1" loop autoplay></lottie-player>
     </div>
     <div class="timer-inner">
@@ -132,20 +131,112 @@ button.control{
   </div>
 </section>
 
-<!-- ✅ Same side panel, feedOptions, playOptions, boostOptions -->
-<!-- (Your entire existing side panel content goes here, unchanged) -->
-
-<!-- Progress chart -->
+<!-- ✅ Side Panel -->
 <aside class="side-panel">
-  <!-- (same Feed, Play, Boost sections as your version) -->
-</aside>
 
+<!-- Feed -->
+<div class="panel">
+  <h3>Feed</h3>
+  <div class="shop-grid">
+    <div class="shop-item"><div>🍎 Apple</div><button onclick="buyItem('Apple',10)">Buy (10)</button></div>
+    <div class="shop-item"><div>🍰 Cake</div><button onclick="buyItem('Cake',20)">Buy (20)</button></div>
+  </div>
+</div>
+
+<!-- Play -->
+<div class="panel">
+  <h3>Play</h3>
+  <button class="control" onclick="togglePlayOptions()">Buy Toy 🎾</button>
+  <div id="playOptions">
+    <div class="shop-item"><div>Ball</div><img src="https://media.giphy.com/media/l0MYKDrJirh0uS8O0/giphy.gif" width="100"><button onclick="buyPlay('Ball',15)">Buy (15)</button></div>
+    <div class="shop-item"><div>Bell</div><img src="https://media.giphy.com/media/3o7aD2saalBwwftBIY/giphy.gif" width="100"><button onclick="buyPlay('Bell',20)">Buy (20)</button></div>
+    <div class="shop-item"><div>Mouse</div><img src="https://media.giphy.com/media/26tPplGWjN0xLybiU/giphy.gif" width="100"><button onclick="buyPlay('Mouse',25)">Buy (25)</button></div>
+    <div class="shop-item"><div>Spinner</div><img src="https://media.giphy.com/media/l0MYt5jPR6QX5pnqM/giphy.gif" width="100"><button onclick="buyPlay('Spinner',30)">Buy (30)</button></div>
+  </div>
+</div>
+
+<!-- Boost -->
+<div class="panel">
+  <h3>Boost</h3>
+  <button class="control" onclick="toggleBoostOptions()">Buy Boost ⚡</button>
+  <div id="boostOptions">
+    <div class="shop-item"><div>Happy Treat</div><img src="https://media.giphy.com/media/3o6ZsYwi5s1YvCzEuk/giphy.gif" width="100"><button onclick="buyBoost('Happy Treat',40)">Buy (40)</button></div>
+    <div class="shop-item"><div>Boost Buttons</div><img src="https://media.giphy.com/media/xT8qBepJQzUj5Vx5W8/giphy.gif" width="100"><button onclick="buyBoost('Boost Buttons',50)">Buy (50)</button></div>
+    <div class="shop-item"><div>Accessory Boost</div><img src="https://media.giphy.com/media/3o6ZtpxSZbQRRnwCKQ/giphy.gif" width="100"><button onclick="buyBoost('Accessory Boost',60)">Buy (60)</button></div>
+    <div class="shop-item"><div>Cheer Potion</div><img src="https://media.giphy.com/media/3oz8xKaR836UJOYeOc/giphy.gif" width="100"><button onclick="buyBoost('Cheer Potion',70)">Buy (70)</button></div>
+  </div>
+</div>
+
+</aside>
 </main>
 </div>
 
 <script>
-// 🧠 Your complete JS logic – unchanged from working version
-// (Timer, shop, boosts, chart logic exactly same as before)
+let seconds=0,timer=null,coins=0;
+const timeEl=document.getElementById('time');
+const petStatus=document.getElementById('petStatus');
+const coinEl=document.getElementById('coinCount');
+const ring=document.getElementById('ring');
+const petAnim=document.getElementById('petAnim');
+function updateTimer(){
+  let m=Math.floor(seconds/60).toString().padStart(2,'0');
+  let s=(seconds%60).toString().padStart(2,'0');
+  timeEl.textContent=`${m}:${s}`;
+}
+function startTimer(){
+  if(timer)return;
+  petStatus.textContent="Pet is focusing!";
+  petAnim.setAttribute('speed','1.5');
+  timer=setInterval(()=>{
+    seconds++;updateTimer();
+    if(seconds%60===0){coins+=5;coinEl.textContent=coins;}
+  },1000);
+}
+function pauseTimer(){
+  clearInterval(timer);timer=null;
+  petStatus.textContent="Pet paused...";
+  petAnim.setAttribute('speed','0.5');
+}
+function resetTimer(){
+  pauseTimer();seconds=0;updateTimer();
+  petStatus.textContent="Pet is ready!";
+  ring.style.strokeDashoffset=0;
+}
+document.getElementById('startBtn').onclick=startTimer;
+document.getElementById('pauseBtn').onclick=pauseTimer;
+document.getElementById('resetBtn').onclick=resetTimer;
+
+function buyItem(item,price){
+  if(coins<price){alert('Not enough coins!');return;}
+  coins-=price;coinEl.textContent=coins;
+  petStatus.textContent=`${item} eaten! Yum 😋`;
+}
+
+function togglePlayOptions(){
+  const el=document.getElementById('playOptions');
+  el.style.display=(el.style.display==='block')?'none':'block';
+}
+
+function buyPlay(item,price){
+  if(coins<price){alert('Not enough coins!');return;}
+  coins-=price;coinEl.textContent=coins;
+  petStatus.textContent=`Pet plays with ${item}! 🐾`;
+  petAnim.setAttribute('speed','2');
+  setTimeout(()=>petAnim.setAttribute('speed','1'),3000);
+}
+
+function toggleBoostOptions(){
+  const el=document.getElementById('boostOptions');
+  el.style.display=(el.style.display==='block')?'none':'block';
+}
+
+function buyBoost(item,price){
+  if(coins<price){alert('Not enough coins!');return;}
+  coins-=price;coinEl.textContent=coins;
+  petStatus.textContent=`Boost activated: ${item}! ⚡`;
+  petAnim.setAttribute('speed','3');
+  setTimeout(()=>petAnim.setAttribute('speed','1'),5000);
+}
 </script>
 </body>
 </html>
